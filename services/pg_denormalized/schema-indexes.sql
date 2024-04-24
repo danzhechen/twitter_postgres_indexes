@@ -1,0 +1,5 @@
+CREATE INDEX idx_tweets_extended_text_fulltext ON tweets_jsonb USING gin (to_tsvector('english'::regconfig, COALESCE(((data -> 'extended_tweet'::text) ->> 'full_text'::text), ''::text)))
+CREATE INDEX idx_tweets_jsonb_extended_hashtags ON tweets_jsonb USING gin (((((data -> 'extended_tweet'::text) -> 'entities'::text) -> 'hashtags'::text)))
+CREATE INDEX idx_tweets_jsonb_hashtags ON public.tweets_jsonb USING gin ((((data -> 'entities'::text) -> 'hashtags'::text)))
+CREATE INDEX idx_tweets_text_fulltext ON tweets_jsonb USING gin (to_tsvector('english'::regconfig, COALESCE((data ->> 'text'::text), ''::text)))
+CREATE INDEX idx_tweets_text_gin ON public.tweets_jsonb USING gin (to_tsvector('english'::regconfig, COALESCE(((data -> 'extended_tweet'::text) ->> 'full_text'::text), (data ->> 'text'::text))))
